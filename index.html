@@ -5,166 +5,245 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AGS CELL POS PRO</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body{
-  margin:0;
-  font-family:'Poppins',sans-serif;
-  background:#f4f6f9;
+:root{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --primary:#6366f1;
+  --accent:#22d3ee;
+  --danger:#ef4444;
+  --text:#f1f5f9;
+  --muted:#94a3b8;
 }
 
-.sidebar{
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* HEADER */
+.header{
   position:fixed;
-  left:-250px;
   top:0;
-  width:250px;
-  height:100%;
-  background:#111827;
-  color:white;
-  transition:.3s;
-  padding-top:60px;
+  left:0;
+  right:0;
+  height:60px;
+  background:#0f172a;
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  border-bottom:1px solid #1e293b;
   z-index:1000;
 }
 
-.sidebar a{
-  display:block;
-  padding:15px;
-  color:white;
-  text-decoration:none;
-  font-size:14px;
+.logo{
+  font-weight:700;
+  font-size:18px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
-.sidebar a:hover{
-  background:#1f2937;
+.hamburger{
+  width:30px;
+  height:20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  margin-right:15px;
+  cursor:pointer;
+}
+
+.hamburger span{
+  height:3px;
+  background:white;
+  border-radius:5px;
+  transition:.3s;
+}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;
+  left:-260px;
+  top:0;
+  width:260px;
+  height:100%;
+  background:#111827;
+  padding-top:80px;
+  transition:.3s;
+  z-index:999;
 }
 
 .sidebar.active{
   left:0;
 }
 
-.header{
-  background:#111827;
-  color:white;
-  padding:15px;
+.sidebar a{
   display:flex;
   align-items:center;
+  gap:12px;
+  padding:14px 20px;
+  color:var(--text);
+  text-decoration:none;
+  font-size:14px;
+  transition:.2s;
 }
 
-.menu-btn{
-  font-size:20px;
-  cursor:pointer;
-  margin-right:10px;
+.sidebar a:hover{
+  background:#1f2937;
 }
 
+/* CONTENT */
 .content{
-  padding:20px;
+  padding:90px 20px 40px;
 }
 
+/* CARD */
 .card{
-  background:white;
-  padding:15px;
-  border-radius:12px;
+  background:var(--card);
+  padding:18px;
+  border-radius:16px;
+  margin-bottom:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,.4);
+  backdrop-filter:blur(10px);
+}
+
+.card h3{
+  margin:0 0 15px;
+  font-weight:600;
+  font-size:15px;
+  color:var(--muted);
+}
+
+.big-number{
+  font-size:24px;
+  font-weight:700;
+}
+
+/* INPUT */
+.input-group{
   margin-bottom:15px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
 input,select{
   width:100%;
-  padding:10px;
-  margin-bottom:10px;
-  border-radius:8px;
-  border:1px solid #ddd;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  background:#0f172a;
+  color:white;
+  outline:none;
+  font-size:14px;
+}
+
+input:focus,select:focus{
+  border:1px solid var(--primary);
 }
 
 button{
   width:100%;
-  padding:10px;
+  padding:12px;
   border:none;
-  border-radius:8px;
-  background:#2563eb;
+  border-radius:12px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
   color:white;
-  font-weight:bold;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  opacity:.9;
 }
 
 button.danger{
-  background:#dc2626;
+  background:var(--danger);
 }
 
-.hidden{
-  display:none;
+.hidden{display:none}
+
+/* GRID */
+.grid{
+  display:grid;
+  gap:15px;
 }
 
-h3{
-  margin-top:0;
-}
-
-.version{
-  font-size:12px;
-  text-align:center;
-  color:#666;
-  margin-top:20px;
+@media(min-width:768px){
+  .grid{
+    grid-template-columns:1fr 1fr;
+  }
 }
 </style>
 </head>
+
 <body>
+
+<div class="header">
+  <div class="hamburger" onclick="toggleSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <div class="logo">AGS CELL PRO</div>
+</div>
 
 <div class="sidebar" id="sidebar">
   <a onclick="showPage('dashboard')">🏠 Dashboard</a>
-  <a onclick="showPage('digital')">💡 Transaksi Digital</a>
+  <a onclick="showPage('digital')">💡 Digital</a>
   <a onclick="showPage('ewallet')">📱 E-Wallet</a>
   <a onclick="showPage('pengeluaran')">💸 Pengeluaran</a>
-  <a onclick="showPage('hutang')">📒 Hutang/Piutang</a>
   <a onclick="showPage('grafik')">📊 Grafik & Profit</a>
   <a onclick="showPage('setting')">⚙ Pengaturan</a>
-</div>
-
-<div class="header">
-  <span class="menu-btn" onclick="toggleMenu()">☰</span>
-  <b>AGS CELL POS</b>
 </div>
 
 <div class="content">
 
 <!-- DASHBOARD -->
 <div id="dashboard">
-  <div class="card">
-    <h3>💰 Saldo Kas</h3>
-    <h2 id="kas">0</h2>
-  </div>
+  <div class="grid">
+    <div class="card">
+      <h3>Saldo Kas</h3>
+      <div class="big-number" id="kas">0</div>
+    </div>
 
-  <div class="card">
-    <h3>🏦 Saldo Bank</h3>
-    <h2 id="bank">0</h2>
-  </div>
+    <div class="card">
+      <h3>Saldo Bank</h3>
+      <div class="big-number" id="bank">0</div>
+    </div>
 
-  <div class="card">
-    <h3>📈 Total Uang</h3>
-    <h2 id="total">0</h2>
+    <div class="card">
+      <h3>Total Uang</h3>
+      <div class="big-number" id="total">0</div>
+    </div>
+
+    <div class="card">
+      <h3>Total Profit</h3>
+      <div class="big-number" id="profit">0</div>
+    </div>
   </div>
 </div>
 
-<!-- TRANSAKSI DIGITAL -->
+<!-- DIGITAL -->
 <div id="digital" class="hidden">
   <div class="card">
-    <h3>💡 Transaksi Digital</h3>
-    <input type="text" id="namaDigital" placeholder="Nama Pelanggan (opsional)">
-    <input type="number" id="modalDigital" placeholder="Harga Modal (ambil dari bank)">
-    <input type="number" id="jualDigital" placeholder="Harga Jual">
+    <h3>Transaksi Digital</h3>
 
-    <select id="tipeDigital">
-      <option value="full">Bayar Penuh</option>
-      <option value="sebagian">Bayar Sebagian</option>
-      <option value="hutang">Hutang Full</option>
-    </select>
+    <div class="input-group">
+      <input type="number" id="modalDigital" placeholder="Harga Modal (Bank)">
+    </div>
 
-    <select id="metodeDigital">
-      <option value="kas">Kas</option>
-      <option value="bank">Bank</option>
-    </select>
+    <div class="input-group">
+      <input type="number" id="jualDigital" placeholder="Harga Jual">
+    </div>
 
-    <button onclick="tambahDigital()">Tambah</button>
+    <button onclick="tambahDigital()">Simpan Transaksi</button>
   </div>
 
   <div id="listDigital"></div>
@@ -173,22 +252,17 @@ h3{
 <!-- EWALLET -->
 <div id="ewallet" class="hidden">
   <div class="card">
-    <h3>📱 Transaksi E-Wallet</h3>
-    <input type="number" id="modalEwallet" placeholder="Harga Modal">
-    <input type="number" id="jualEwallet" placeholder="Harga Jual">
+    <h3>Transaksi E-Wallet</h3>
 
-    <select id="tipeEwallet">
-      <option value="full">Bayar Penuh</option>
-      <option value="sebagian">Bayar Sebagian</option>
-      <option value="hutang">Hutang Full</option>
-    </select>
+    <div class="input-group">
+      <input type="number" id="modalEwallet" placeholder="Harga Modal (Bank)">
+    </div>
 
-    <select id="metodeEwallet">
-      <option value="kas">Kas</option>
-      <option value="bank">Bank</option>
-    </select>
+    <div class="input-group">
+      <input type="number" id="jualEwallet" placeholder="Harga Jual">
+    </div>
 
-    <button onclick="tambahEwallet()">Tambah</button>
+    <button onclick="tambahEwallet()">Simpan Transaksi</button>
   </div>
 
   <div id="listEwallet"></div>
@@ -197,70 +271,45 @@ h3{
 <!-- PENGELUARAN -->
 <div id="pengeluaran" class="hidden">
   <div class="card">
-    <h3>💸 Pengeluaran</h3>
-    <input type="number" id="jumlahKeluar" placeholder="Jumlah">
-    <select id="metodeKeluar">
-      <option value="kas">Kas</option>
-      <option value="bank">Bank</option>
-    </select>
-    <button onclick="tambahPengeluaran()">Kurangi Saldo</button>
-  </div>
-</div>
-
-<!-- HUTANG -->
-<div id="hutang" class="hidden">
-  <div class="card">
-    <h3>📒 Hutang & Piutang</h3>
-    <div id="listHutang"></div>
+    <h3>Pengeluaran</h3>
+    <input type="number" id="jumlahKeluar" placeholder="Jumlah Pengeluaran">
+    <button onclick="kurangiSaldo()">Kurangi Saldo</button>
   </div>
 </div>
 
 <!-- GRAFIK -->
 <div id="grafik" class="hidden">
   <div class="card">
-    <h3>📊 Grafik Penjualan</h3>
-    <canvas id="chartPenjualan"></canvas>
-  </div>
-
-  <div class="card">
-    <h3>💰 Total Profit</h3>
-    <h2 id="profit">0</h2>
+    <canvas id="chart"></canvas>
   </div>
 </div>
 
 <!-- SETTING -->
 <div id="setting" class="hidden">
   <div class="card">
-    <h3>⚙ Set Modal Awal</h3>
-    <input type="number" id="setKas" placeholder="Saldo Awal Kas">
-    <input type="number" id="setBank" placeholder="Saldo Awal Bank">
+    <h3>Set Saldo Awal</h3>
+    <input type="number" id="setKas" placeholder="Saldo Kas">
+    <input type="number" id="setBank" placeholder="Saldo Bank">
     <button onclick="setModal()">Simpan</button>
-  </div>
-
-  <div class="version">
-    AGS CELL POS PRO v2.0
   </div>
 </div>
 
 </div>
 
 <script>
-let kas=0;
-let bank=0;
-let profit=0;
-let transaksiDigital=[];
-let transaksiEwallet=[];
+let kas=0,bank=0,profit=0;
 
-function toggleMenu(){
+function toggleSidebar(){
   document.getElementById("sidebar").classList.toggle("active");
 }
 
 function showPage(id){
-  document.querySelectorAll(".content > div").forEach(el=>el.classList.add("hidden"));
+  document.querySelectorAll(".content > div").forEach(d=>d.classList.add("hidden"));
   document.getElementById(id).classList.remove("hidden");
+  toggleSidebar();
 }
 
-function updateSaldo(){
+function updateUI(){
   document.getElementById("kas").innerText=kas;
   document.getElementById("bank").innerText=bank;
   document.getElementById("total").innerText=kas+bank;
@@ -270,7 +319,7 @@ function updateSaldo(){
 function setModal(){
   kas=parseInt(document.getElementById("setKas").value)||0;
   bank=parseInt(document.getElementById("setBank").value)||0;
-  updateSaldo();
+  updateUI();
 }
 
 function tambahDigital(){
@@ -279,33 +328,7 @@ function tambahDigital(){
   bank-=modal;
   kas+=jual;
   profit+=jual-modal;
-
-  let id=Date.now();
-  transaksiDigital.push({id,modal,jual});
-  renderDigital();
-  updateSaldo();
-}
-
-function renderDigital(){
-  let html="";
-  transaksiDigital.forEach(t=>{
-    html+=`
-    <div class="card">
-      Jual: ${t.jual} | Modal: ${t.modal}
-      <button class="danger" onclick="hapusDigital(${t.id})">Hapus</button>
-    </div>`;
-  });
-  document.getElementById("listDigital").innerHTML=html;
-}
-
-function hapusDigital(id){
-  let t=transaksiDigital.find(x=>x.id===id);
-  kas-=t.jual;
-  bank+=t.modal;
-  profit-=t.jual-t.modal;
-  transaksiDigital=transaksiDigital.filter(x=>x.id!==id);
-  renderDigital();
-  updateSaldo();
+  updateUI();
 }
 
 function tambahEwallet(){
@@ -314,42 +337,16 @@ function tambahEwallet(){
   bank-=modal;
   kas+=jual;
   profit+=jual-modal;
-  let id=Date.now();
-  transaksiEwallet.push({id,modal,jual});
-  renderEwallet();
-  updateSaldo();
+  updateUI();
 }
 
-function renderEwallet(){
-  let html="";
-  transaksiEwallet.forEach(t=>{
-    html+=`
-    <div class="card">
-      Jual: ${t.jual} | Modal: ${t.modal}
-      <button class="danger" onclick="hapusEwallet(${t.id})">Hapus</button>
-    </div>`;
-  });
-  document.getElementById("listEwallet").innerHTML=html;
-}
-
-function hapusEwallet(id){
-  let t=transaksiEwallet.find(x=>x.id===id);
-  kas-=t.jual;
-  bank+=t.modal;
-  profit-=t.jual-t.modal;
-  transaksiEwallet=transaksiEwallet.filter(x=>x.id!==id);
-  renderEwallet();
-  updateSaldo();
-}
-
-function tambahPengeluaran(){
+function kurangiSaldo(){
   let j=parseInt(document.getElementById("jumlahKeluar").value)||0;
-  let m=document.getElementById("metodeKeluar").value;
-  if(m==="kas"){ kas-=j } else { bank-=j }
-  updateSaldo();
+  kas-=j;
+  updateUI();
 }
 
-updateSaldo();
+updateUI();
 </script>
 
 </body>
