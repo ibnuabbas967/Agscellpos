@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGS CELL POS v3.0 PRO</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f4f6f9;
+}
+
+header{
+  background:#111;
+  color:white;
+  padding:15px;
+  display:flex;
+  align-items:center;
+}
+
+.menu-btn{
+  font-size:22px;
+  margin-right:15px;
+  cursor:pointer;
+}
+
+.sidebar{
+  position:fixed;
+  top:0;
+  left:-260px;
+  width:250px;
+  height:100%;
+  background:#1e1e2f;
+  color:white;
+  transition:0.3s;
+  padding-top:60px;
+  z-index:999;
+}
+
+.sidebar a{
+  display:block;
+  padding:15px;
+  color:white;
+  text-decoration:none;
+  border-bottom:1px solid #333;
+}
+
+.sidebar a:hover{
+  background:#333;
+}
+
+.content{
+  padding:15px;
+}
+
+.card{
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:15px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+input, select, button{
+  width:100%;
+  padding:10px;
+  margin:5px 0;
+  font-size:15px;
+  border-radius:6px;
+  border:1px solid #ddd;
+}
+
+button{
+  background:#111;
+  color:white;
+  border:none;
+}
+
+.balance{
+  font-size:18px;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar" id="sidebar">
+<a href="#" onclick="showPage('dashboard')">Dashboard</a>
+<a href="#" onclick="showPage('transaksi')">Transaksi Digital</a>
+<a href="#" onclick="showPage('ewallet')">E-Wallet</a>
+<a href="#" onclick="showPage('pengeluaran')">Pengeluaran</a>
+<a href="#" onclick="showPage('hutang')">Hutang / Piutang</a>
+<a href="#" onclick="showPage('grafik')">Grafik & Profit</a>
+<a href="#" onclick="showPage('pengaturan')">Pengaturan</a>
+</div>
+
+<header>
+<div class="menu-btn" onclick="toggleMenu()">☰</div>
+<div>AGS CELL POS v3.0 PRO</div>
+</header>
+
+<div class="content">
+
+<div id="dashboard" class="page">
+<div class="card balance">Saldo Kas: Rp <span id="kas">0</span></div>
+<div class="card balance">Saldo Bank: Rp <span id="bank">0</span></div>
+<div class="card balance">Total Uang: Rp <span id="total">0</span></div>
+</div>
+
+<div id="transaksi" class="page" style="display:none;">
+<div class="card">
+<h3>Transaksi Digital</h3>
+<input type="text" id="kategori" placeholder="Kategori (PDAM/Listrik)">
+<input type="number" id="modal" placeholder="Harga Modal">
+<input type="number" id="jual" placeholder="Harga Jual">
+<select id="metode">
+<option value="kas">Bayar ke Kas</option>
+<option value="bank">Bayar ke Bank</option>
+</select>
+<button onclick="tambahTransaksi()">Simpan</button>
+</div>
+</div>
+
+<div id="pengaturan" class="page" style="display:none;">
+<div class="card">
+<h3>Set Modal Awal</h3>
+<input type="number" id="setKas" placeholder="Saldo Awal Kas">
+<input type="number" id="setBank" placeholder="Saldo Awal Bank">
+<button onclick="setModal()">Simpan Modal</button>
+</div>
+</div>
+
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbxQyP0lwjaghmwLijjnNfnd5Cs53igH6u8Sznq6Ve_LVeFvKi0JRZla_6kDMu_BuXTTyA/exec";
+
+function toggleMenu(){
+  let sidebar = document.getElementById("sidebar");
+  sidebar.style.left = sidebar.style.left === "0px" ? "-260px" : "0px";
+}
+
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+  document.getElementById(id).style.display="block";
+  toggleMenu();
+}
+
+async function loadData(){
+  const res = await fetch(API_URL+"?action=getData");
+  const data = await res.json();
+  const saldo = data.saldo[1];
+  document.getElementById("kas").innerText = saldo[0];
+  document.getElementById("bank").innerText = saldo[1];
+  document.getElementById("total").innerText = saldo[0]+saldo[1];
+}
+
+async function tambahTransaksi(){
+  const data = {
+    action:"addTransaksi",
+    jenis:"Digital",
+    kategori:document.getElementById("kategori").value,
+    modal:Number(document.getElementById("modal").value),
+    jual:Number(document.getElementById("jual").value),
+    metode:document.getElementById("metode").value,
+    status:"lunas",
+    keterangan:"-"
+  };
+
+  await fetch(API_URL,{
+    method:"POST",
+    body:JSON.stringify(data)
+  });
+
+  alert("Transaksi berhasil");
+  loadData();
+}
+
+async function setModal(){
+  const kas = Number(document.getElementById("setKas").value);
+  const bank = Number(document.getElementById("setBank").value);
+
+  await fetch(API_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"setModal",
+      kas:kas,
+      bank:bank
+    })
+  });
+
+  alert("Modal berhasil disimpan");
+  loadData();
+}
+
+window.onload = loadData;
+</script>
+
+</body>
+</html>
